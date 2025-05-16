@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reco Health App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            max-width: 480px;
+            height: 100vh;
+            margin: 0 auto;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .screen {
+            height: calc(100vh - 70px); /* Adjust based on your header height */
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        
+        .hidden-screen {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .visible-screen {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .result-section {
+            height: auto;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .result-section.active {
+            max-height: 1000px;
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container flex flex-col">
+        <!-- App Header -->
+        <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold">Reco Health</h1>
+                <p class="text-xs">Powered by Reco Bladers</p>
+            </div>
+            <div class="heart-beat">
+                <i class="fas fa-heartbeat text-2xl"></i>
+            </div>
+        </header>
+        
+        <!-- App Content -->
+        <main class="flex-1 relative">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen visible-screen bg-gradient-to-b from-blue-50 to-white p-6">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center mb-6 pulse-animation">
+                        <i class="fas fa-heartbeat text-white text-4xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">Welcome to Reco Health</h2>
+                    <p class="text-gray-600 text-center mb-10">Your personal health monitoring companion</p>
+                    
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 w-full">Health Features</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 w-full">
+                        <div class="feature-card bg-blue-500 text-white rounded-lg p-4 flex flex-col items-center justify-center" onclick="openBPScreen()">
+                            <i class="fas fa-heart mb-2 text-2xl"></i>
+                            <span>BP Health</span>
+                        </div>
+                        
+                        <div class="feature-card bg-gray-200 rounded-lg p-4 flex flex-col items-center justify-center">
+                            <i class="fas fa-weight mb-2 text-2xl text-gray-600"></i>
+                            <span class="text-gray-600">Weight Tracker</span>
+                            <span class="text-xs text-gray-500 mt-1 text-center">Coming in future update</span>
+                        </div>
+                        
+                        <div class="feature-card bg-gray-200 rounded-lg p-4 flex flex-col items-center justify-center">
+                            <i class="fas fa-walking mb-2 text-2xl text-gray-600"></i>
+                            <span class="text-gray-600">Activity Monitor</span>
+                            <span class="text-xs text-gray-500 mt-1 text-center">Coming in future update</span>
+                        </div>
+                        
+                        <div class="feature-card bg-gray-200 rounded-lg p-4 flex flex-col items-center justify-center">
+                            <i class="fas fa-bed mb-2 text-2xl text-gray-600"></i>
+                            <span class="text-gray-600">Sleep Analysis</span>
+                            <span class="text-xs text-gray-500 mt-1 text-center">Coming in future update</span>
+                        </div>
+                        
+                        <div class="feature-card bg-gray-200 rounded-lg p-4 flex flex-col items-center justify-center">
+                            <i class="fas fa-apple-alt mb-2 text-2xl text-gray-600"></i>
+                            <span class="text-gray-600">Nutrition</span>
+                            <span class="text-xs text-gray-500 mt-1 text-center">Coming in future update</span>
+                        </div>
+                        
+                        <div class="feature-card bg-gray-200 rounded-lg p-4 flex flex-col items-center justify-center">
+                            <i class="fas fa-pills mb-2 text-2xl text-gray-600"></i>
+                            <span class="text-gray-600">Medication</span>
+                            <span class="text-xs text-gray-500 mt-1 text-center">Coming in future update</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BP Health Screen -->
+            <div id="bp-screen" class="screen hidden-screen p-6">
+                <div class="flex items-center mb-6">
+                    <button onclick="backToHome()" class="mr-4 text-blue-600">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 class="text-xl font-bold text-blue-600">BP Health Monitor</h2>
+                </div>
+                
+                <div id="bp-form-container" class="slide-in">
+                    <div class="mb-8 rounded-lg p-4 bg-blue-50">
+                        <p class="text-gray-700">Enter your blood pressure readings and personal details to receive a health assessment and recommendations.</p>
+                    </div>
+                    
+                    <form id="bp-form" onsubmit="processBPForm(event)">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="age">
+                                Age <span class="text-red-500">*</span>
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="age" type="number" required placeholder="Enter your age">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                                Name (Optional)
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="systolic">
+                                    Systolic (SYS) <span class="text-red-500">*</span>
+                                </label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="systolic" type="number" required placeholder="mmHg">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="diastolic">
+                                    Diastolic (DIA) <span class="text-red-500">*</span>
+                                </label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="diastolic" type="number" required placeholder="mmHg">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="pulse">
+                                Pulse Rate <span class="text-red-500">*</span>
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="pulse" type="number" required placeholder="BPM">
+                        </div>
+                        
+                        <div class="flex items-center justify-center">
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline w-full" type="submit">
+                                Check My BP Health
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- BP Results Section (initially hidden) -->
+                <div id="bp-results" class="result-section mt-6 bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4" id="result-title">Your BP Assessment</h3>
+                    
+                    <div class="flex items-center justify-center my-6">
+                        <div id="bp-indicator" class="w-32 h-32 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            <span id="bp-status">Normal</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-700 mb-2">Your Readings:</h4>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-blue-50 p-2 rounded">
+                                <div class="text-sm text-gray-600">SYS</div>
+                                <div class="font-bold text-lg" id="result-sys">120</div>
+                            </div>
+                            <div class="bg-blue-50 p-2 rounded">
+                                <div class="text-sm text-gray-600">DIA</div>
+                                <div class="font-bold text-lg" id="result-dia">80</div>
+                            </div>
+                            <div class="bg-blue-50 p-2 rounded">
+                                <div class="text-sm text-gray-600">PULSE</div>
+                                <div class="font-bold text-lg" id="result-pulse">72</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4" id="advice-container">
+                        <h4 class="font-bold text-gray-700 mb-2">Health Advice:</h4>
+                        <p id="health-advice" class="text-gray-600"></p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-700 mb-2">Diet Recommendations:</h4>
+                        <div class="mb-2">
+                            <h5 class="text-gray-700 font-semibold">Vegetarian Options:</h5>
+                            <p id="veg-diet" class="text-gray-600"></p>
+                        </div>
+                        <div>
+                            <h5 class="text-gray-700 font-semibold">Non-Vegetarian Options:</h5>
+                            <p id="nonveg-diet" class="text-gray-600"></p>
+                        </div>
+                    </div>
+                    
+                    <div id="medication-container">
+                        <h4 class="font-bold text-gray-700 mb-2">Medication Advice:</h4>
+                        <p id="medication-advice" class="text-gray-600"></p>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-center">
+                        <button onclick="resetBPForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+                            Check Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Animation on initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in');
+                }, 300 + (index * 100));
+            });
+        });
+        
+        function openBPScreen() {
+            document.getElementById('welcome-screen').classList.remove('visible-screen');
+            document.getElementById('welcome-screen').classList.add('hidden-screen');
+            
+            document.getElementById('bp-screen').classList.remove('hidden-screen');
+            document.getElementById('bp-screen').classList.add('visible-screen');
+        }
+        
+        function backToHome() {
+            document.getElementById('bp-screen').classList.remove('visible-screen');
+            document.getElementById('bp-screen').classList.add('hidden-screen');
+            
+            document.getElementById('welcome-screen').classList.remove('hidden-screen');
+            document.getElementById('welcome-screen').classList.add('visible-screen');
+            
+            resetBPForm();
+        }
+        
+        function processBPForm(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const age = parseInt(document.getElementById('age').value);
+            const name = document.getElementById('name').value;
+            const systolic = parseInt(document.getElementById('systolic').value);
+            const diastolic = parseInt(document.getElementById('diastolic').value);
+            const pulse = parseInt(document.getElementById('pulse').value);
+            
+            // Update results display
+            document.getElementById('result-sys').textContent = systolic;
+            document.getElementById('result-dia').textContent = diastolic;
+            document.getElementById('result-pulse').textContent = pulse;
+            
+            // Set BP status and color
+            let bpStatus;
+            let bpColor;
+            let healthAdvice = '';
+            let vegDiet = '';
+            let nonVegDiet = '';
+            let medicationAdvice = '';
+            
+            // BP Classification logic
+            if (systolic < 90 || diastolic < 60) {
+                bpStatus = "Low BP";
+                bpColor = "#6366F1"; // Indigo
+                
+                healthAdvice = `Your blood pressure is lower than normal. ${age > 65 ? 'For seniors, ' : ''}Low blood pressure may cause dizziness, fainting, or fatigue.`;
+                
+                if (systolic < 80 || diastolic < 50) {
+                    healthAdvice += " Please consult a doctor soon as very low blood pressure can be concerning.";
+                }
+                
+                vegDiet = "Increase salt intake moderately, stay hydrated with plenty of fluids, eat smaller and more frequent meals. Include salted nuts, cheese, cottage cheese, olives, and pickled vegetables.";
+                nonVegDiet = "Include protein-rich foods like eggs, chicken soup with added salt, and fish. Bone broth can also help increase blood pressure.";
+                
+                if (age < 18) {
+                    medicationAdvice = "Medication is rarely prescribed for low blood pressure in people under 18. Please consult a pediatrician for guidance.";
+                } else if (age < 60) {
+                    medicationAdvice = "For persistent low BP, a doctor might recommend fludrocortisone or midodrine, but these are only prescribed after thorough evaluation.";
+                } else {
+                    medicationAdvice = "Seniors should consult their doctor before taking any medication for low blood pressure, as it may interact with other medications.";
+                }
+            } else if (systolic < 120 && diastolic < 80) {
+                bpStatus = "Normal";
+                bpColor = "#10B981"; // Green
+                
+                healthAdvice = "Your blood pressure is in the normal range. Keep maintaining a healthy lifestyle!";
+                vegDiet = "Continue with a balanced diet rich in fruits, vegetables, whole grains, and legumes. Include foods like spinach, bananas, sweet potatoes, and beans.";
+                nonVegDiet = "Continue with lean proteins like fish (especially fatty fish rich in omega-3 fatty acids), skinless poultry, and limit red meat consumption.";
+                medicationAdvice = "No medication is needed for normal blood pressure. Continue with regular check-ups and maintain a healthy lifestyle.";
+            } else if ((systolic >= 120 && systolic < 130) && diastolic < 80) {
+                bpStatus = "Elevated";
+                bpColor = "#FBBF24"; // Yellow
+                
+                healthAdvice = "Your blood pressure is slightly elevated. This is not a disease category but means you're at risk of developing high blood pressure in the future.";
+                vegDiet = "Reduce sodium intake. Focus on potassium-rich foods like bananas, potatoes, spinach, and beans. Include garlic, dark chocolate, and pomegranate juice.";
+                nonVegDiet = "Choose lean proteins like skinless poultry and fish. Consider fatty fish like salmon and mackerel twice a week for omega-3 fatty acids.";
+                medicationAdvice = "Medication is typically not prescribed at this stage. Focus on lifestyle modifications like reducing salt intake, regular exercise, and stress management.";
+            } else if ((systolic >= 130 && systolic < 140) || (diastolic >= 80 && diastolic < 90)) {
+                bpStatus = "Stage 1 Hypertension";
+                bpColor = "#F59E0B"; // Amber
+                
+                healthAdvice = "You have Stage 1 Hypertension. It's important to make lifestyle changes and consult a healthcare provider.";
+                vegDiet = "Adopt the DASH diet (Dietary Approaches to Stop Hypertension): more fruits, vegetables, low-fat dairy, whole grains, and less sodium. Include beetroot, berries, and flaxseeds.";
+                nonVegDiet = "Choose fish rich in omega-3 fatty acids like salmon and mackerel. Limit red meat and processed meats. Consider egg whites instead of whole eggs.";
+                
+                if (age < 18) {
+                    medicationAdvice = "Children and teens with hypertension should be evaluated by a pediatric specialist. Medication is prescribed cautiously and only when necessary.";
+                } else if (age < 60) {
+                    medicationAdvice = "Your doctor might recommend lifestyle changes first, but may prescribe medications like ACE inhibitors, ARBs, or diuretics if necessary.";
+                } else {
+                    medicationAdvice = "Seniors may be prescribed lower doses of blood pressure medications to start, often calcium channel blockers or thiazide diuretics. Always discuss potential medication interactions with your doctor.";
+                }
+            } else if ((systolic >= 140 && systolic < 180) || (diastolic >= 90 && diastolic < 120)) {
+                bpStatus = "Stage 2 Hypertension";
+                bpColor = "#EF4444"; // Red
+                
+                healthAdvice = "You have Stage 2 Hypertension. Please consult a healthcare provider soon as this requires medical attention.";
+                vegDiet = "Follow a strict DASH diet with very low sodium intake. Focus on potassium, magnesium, and calcium-rich foods. Include leafy greens, yogurt, beans, nuts, and seeds.";
+                nonVegDiet = "Limit all meats and focus primarily on fatty fish 2-3 times weekly. Avoid processed meats completely. If consuming poultry, remove skin and bake or grill instead of frying.";
+                
+                if (age < 18) {
+                    medicationAdvice = "Children with Stage 2 hypertension typically need medication along with lifestyle changes. A pediatric cardiologist should be consulted immediately.";
+                } else if (age < 60) {
+                    medicationAdvice = "You'll likely need two or more medications from different classes (such as an ACE inhibitor with a diuretic). Regular monitoring and follow-up is essential.";
+                } else {
+                    medicationAdvice = "Seniors typically need multiple medications, carefully adjusted to avoid side effects. Combination pills may be prescribed to simplify the regimen.";
+                }
+            } else {
+                bpStatus = "Hypertensive Crisis";
+                bpColor = "#991B1B"; // Dark Red
+                
+                healthAdvice = "You are experiencing a Hypertensive Crisis. SEEK EMERGENCY MEDICAL CARE IMMEDIATELY!";
+                vegDiet = "This is a medical emergency requiring immediate treatment. Dietary changes alone are not sufficient.";
+                nonVegDiet = "This is a medical emergency requiring immediate treatment. Dietary changes alone are not sufficient.";
+                medicationAdvice = "Emergency IV medications are typically administered in a hospital setting for hypertensive crisis. DO NOT wait - seek emergency care immediately!";
+            }
+            
+            // Update the BP indicator
+            const bpIndicator = document.getElementById('bp-indicator');
+            bpIndicator.style.backgroundColor = bpColor;
+            document.getElementById('bp-status').textContent = bpStatus;
+            
+            // Update advice text
+            document.getElementById('result-title').textContent = name ? `${name}'s BP Assessment` : "Your BP Assessment";
+            document.getElementById('health-advice').textContent = healthAdvice;
+            document.getElementById('veg-diet').textContent = vegDiet;
+            document.getElementById('nonveg-diet').textContent = nonVegDiet;
+            document.getElementById('medication-advice').textContent = medicationAdvice;
+            
+            // Show results
+            document.getElementById('bp-results').classList.add('active');
+            document.getElementById('bp-form-container').style.display = 'none';
+            
+            // Animate the results appearance
+            setTimeout(() => {
+                document.getElementById('bp-results').classList.add('fade-in');
+            }, 100);
+        }
+        
+        function resetBPForm() {
+            // Hide results and show form
+            document.getElementById('bp-results').classList.remove('active');
+            document.getElementById('bp-form-container').style.display = 'block';
+            
+            // Reset form
+            document.getElementById('bp-form').reset();
+        }
+    </script>
+</body>
+</html>
